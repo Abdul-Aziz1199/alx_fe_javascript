@@ -73,7 +73,7 @@ function addQuote() {
 function createAddQuoteForm() {
   const formContainer = document.createElement('div');
   formContainer.id = 'quoteFormContainer';
-
+//generating the createAddform input field
   const newQuoteText = document.createElement('input');
   newQuoteText.id = 'newQuoteText';
   newQuoteText.type = 'text';
@@ -97,3 +97,4 @@ function createAddQuoteForm() {
 
 // Call the function to create and add the form to the DOM
 createAddQuoteForm();
+
