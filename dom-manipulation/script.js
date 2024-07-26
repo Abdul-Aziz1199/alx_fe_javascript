@@ -128,8 +128,7 @@ function importFromJsonFile(event) {
 
 // Create the add quote form
 function createAddQuoteForm() {
-  const formContainer = document.createElement('div');
-  formContainer.id = 'quoteFormContainer';
+  const formContainer = document.getElementById('quoteFormContainer');
 
   const newQuoteText = document.createElement('input');
   newQuoteText.id = 'newQuoteText';
@@ -148,27 +147,6 @@ function createAddQuoteForm() {
   formContainer.appendChild(newQuoteText);
   formContainer.appendChild(newQuoteCategory);
   formContainer.appendChild(addButton);
-
-  document.body.appendChild(formContainer);
-}
-
-// Create export and import buttons
-function createExportImportButtons() {
-  const exportButton = document.createElement('button');
-  exportButton.textContent = 'Export Quotes';
-  exportButton.onclick = exportToJsonFile;
-
-  const importInput = document.createElement('input');
-  importInput.type = 'file';
-  importInput.accept = 'application/json';
-  importInput.onchange = importFromJsonFile;
-
-  const importLabel = document.createElement('label');
-  importLabel.textContent = 'Import Quotes';
-  importLabel.appendChild(importInput);
-
-  document.body.appendChild(exportButton);
-  document.body.appendChild(importLabel);
 }
 
 // Initialize the application
@@ -177,7 +155,8 @@ function init() {
   loadLastViewedQuote();
   document.getElementById('newQuote').addEventListener('click', showRandomQuote);
   createAddQuoteForm();
-  createExportImportButtons();
+  document.getElementById('exportQuotes').addEventListener('click', exportToJsonFile);
+  document.getElementById('importQuotes').addEventListener('change', importFromJsonFile);
 }
 
 window.onload = init;
