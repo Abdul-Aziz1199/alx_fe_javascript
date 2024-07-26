@@ -237,6 +237,11 @@ function resolveConflicts(serverQuotes) {
   alert('Quotes updated from server');
 }
 
+// Sync quotes periodically
+function syncQuotes() {
+  setInterval(fetchQuotesFromServer, 60000); // Fetch quotes from server every 60 seconds
+}
+
 // Initialize the application
 function init() {
   loadQuotes();
@@ -248,7 +253,7 @@ function init() {
   document.getElementById('exportQuotes').addEventListener('click', exportToJsonFile);
   document.getElementById('importQuotes').addEventListener('change', importFromJsonFile);
 
-  setInterval(fetchQuotesFromServer, 60000); // Fetch quotes from server every 60 seconds
+  syncQuotes(); // Start periodic syncing
 }
 
 window.onload = init;
