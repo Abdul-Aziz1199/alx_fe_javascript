@@ -1,3 +1,4 @@
+const SERVER_URL = 'https://jsonplaceholder.typicode.com/posts'; 
 let quotes = [
   { text: "The greatest glory in living lies not in never falling, but in rising every time we fall.", category: "Inspiration" },
   { text: "The way to get started is to quit talking and begin doing.", category: "Motivation" },
@@ -79,6 +80,7 @@ function addQuote() {
     saveQuotes();
 
     populateCategories();
+    syncWithServer(newQuote, 'POST');
 
     // Clear input fields
     document.getElementById('newQuoteText').value = '';
@@ -185,6 +187,56 @@ function populateCategories() {
   });
 }
 
+// Sync with server
+async function syncWithServer(quote, method) {
+  try {
+    const response = await fetch(SERVER_URL, {
+      method: method,
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(quote)
+    });
+    if (response.ok) {
+      console.log('Quote synced with server');
+    } else {
+      console.error('Failed to sync with server');
+    }
+  } catch (error) {
+    console.error('Error syncing with server:', error);
+  }
+}
+
+// Fetch quotes from server periodically
+async function fetchQuotesFromServer() {
+  try {
+    const response = await fetch(SERVER_URL);
+    if (response.ok) {
+      const serverQuotes = await response.json();
+      resolveConflicts(serverQuotes);
+    } else {
+      console.error('Failed to fetch quotes from server');
+    }
+  } catch (error) {
+    console.error('Error fetching quotes from server:', error);
+  }
+}
+
+// Resolve conflicts between local and server quotes
+function resolveConflicts(serverQuotes) {
+  const localQuotes = new Map(quotes.map(quote => [quote.text, quote]));
+
+  serverQuotes.forEach(serverQuote => {
+    if (!localQuotes.has(serverQuote.text)) {
+      quotes.push(serverQuote);
+    }
+  });
+
+  saveQuotes();
+  populateCategories();
+  alert('Quotes updated from server');
+}
+
 // Initialize the application
 function init() {
   loadQuotes();
@@ -195,6 +247,8 @@ function init() {
   createAddQuoteForm();
   document.getElementById('exportQuotes').addEventListener('click', exportToJsonFile);
   document.getElementById('importQuotes').addEventListener('change', importFromJsonFile);
+
+  setInterval(fetchQuotesFromServer, 60000); // Fetch quotes from server every 60 seconds
 }
 
 window.onload = init;
